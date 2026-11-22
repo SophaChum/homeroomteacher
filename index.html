@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#4f46e5">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>គ្រប់គ្រងសិស្ស</title>
+<link rel="icon" type="image/png" href="Logo.png">
+<link rel="apple-touch-icon" href="Logo.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Kantumruy+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Moul&family=Siemreap&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<!-- LOGIN SCREEN -->
+<div id="loginScreen">
+  <div class="login-box">
+    <div class="brand-icon" style="margin: 0 auto 20px;"><img src="Logo.png" alt="Logo"></div>
+    <h2 style="margin-bottom: 20px;">ចូលប្រើប្រាស់ប្រព័ន្ធ</h2>
+    <div class="field"><input class="input" type="email" id="loginEmail" placeholder="អ៊ីមែល (Email)" autocomplete="username"></div>
+    <div class="field"><input class="input" type="password" id="loginPassword" placeholder="លេខសម្ងាត់ (Password)" autocomplete="current-password"></div>
+    <button class="btn primary" id="loginBtn" style="width: 100%; justify-content: center;">ចូល (Log In)</button>
+    <p id="loginError" style="color: var(--danger); font-size: 13px; margin-top: 15px; height: 18px;"></p>
+  </div>
+</div>
+
+<!-- APP CONTAINER -->
+<div class="layout" id="appContainer">
+  <aside class="sidebar">
+    <div class="brand">
+      <div class="brand-icon"><img src="Logo.png" alt="Logo"></div>
+      <div class="brand-text">
+        <div class="brand-title">គ្រប់គ្រងសិស្ស</div>
+        <div class="brand-sub" id="brandSub">Cloud</div>
+      </div>
+    </div>
+    <nav class="nav" id="nav">
+      <button class="nav-item active" data-tab="dashboard"><span class="icon" data-icon="dashboard"></span><span>ផ្ទាំងគ្រប់គ្រង</span></button>
+      <button class="nav-item" data-tab="students"><span class="icon" data-icon="users"></span><span>សិស្ស</span></button>
+      <button class="nav-item" data-tab="attendance"><span class="icon" data-icon="calendar"></span><span>វត្តមាន</span></button>
+      <button class="nav-item" data-tab="grades"><span class="icon" data-icon="award"></span><span>ពិន្ទុ</span></button>
+      <button class="nav-item" data-tab="notes"><span class="icon" data-icon="note"></span><span>កំណត់ចំណាំ</span></button>
+      <button class="nav-item" data-tab="letters"><span class="icon" data-icon="mail"></span><span>អញ្ជើញមាតាបិតា</span></button>
+      <button class="nav-item" data-tab="backup"><span class="icon" data-icon="database"></span><span>បម្រុងទុក</span></button>
+    </nav>
+    <div class="sidebar-foot">
+      <button class="btn danger" id="logoutBtn" style="width: 100%; justify-content: center;"><span class="icon" data-icon="x"></span> ចាកចេញ (Log out)</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header class="topbar">
+      <div>
+        <div class="topbar-title" id="pageTitle">ផ្ទាំងគ្រប់គ្រង</div>
+        <div class="topbar-sub" id="pageSub">ទិដ្ឋភាពទូទៅនៃសាលា</div>
+      </div>
+      <div class="topbar-actions">
+        <div id="syncStatus" class="saved"><span class="icon sm" data-icon="cloud"></span> បានរក្សាទុក</div>
+        <button class="btn sm danger mobile-only" id="logoutBtnTop" title="ចាកចេញ"><span class="icon" data-icon="x"></span></button>
+        <span class="badge gray" id="studentCountPill"><span class="icon" data-icon="users"></span><span id="studentCountText">0 សិស្ស</span></span>
+      </div>
+    </header>
+
+    <div class="content">
+      <div class="alert warn" id="backupBanner" hidden>
+        <span class="icon" data-icon="alert"></span>
+        <span id="backupBannerText"></span>
+        <span class="spacer"></span>
+        <button class="btn sm primary" id="backupBannerBtn"><span class="icon" data-icon="download"></span>បម្រុងទុកឥឡូវ</button>
+      </div>
+
+      <!-- DASHBOARD -->
+      <section class="tab active" id="tab-dashboard">
+        <div class="grid grid-4" style="margin-bottom:16px">
+          <div class="stat"><div class="stat-icon tint-primary"><span class="icon" data-icon="users"></span></div><div class="k">សិស្សសរុប</div><div class="v" id="stStudents">0</div><div class="n" id="stStudentsSub">—</div></div>
+          <div class="stat"><div class="stat-icon tint-success"><span class="icon" data-icon="check"></span></div><div class="k">អវត្តមានថ្ងៃនេះ</div><div class="v" id="stAtt">—</div><div class="n" id="stAttSub">មិនទាន់សម្គាល់</div></div>
+          <div class="stat"><div class="stat-icon tint-warning"><span class="icon" data-icon="award"></span></div><div class="k">មធ្យមភាគថ្នាក់</div><div class="v" id="stAvg">—</div><div class="n" id="stAvgSub">គ្មានពិន្ទុ</div></div>
+          <div class="stat"><div class="stat-icon tint-violet"><span class="icon" data-icon="database"></span></div><div class="k">បម្រុងទុកចុងក្រោយ</div><div class="v" id="stBackup" style="font-size:16px;padding-top:6px">មិនដែល</div><div class="n" id="stBackupSub">នាំចេញទិន្នន័យ</div></div>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <div class="card-h"><span class="icon" data-icon="note" style="color:var(--primary)"></span><div><h2>កំណត់ចំណាំថ្មីៗ</h2></div></div>
+            <div class="sub">ការសង្កេត និងការតាមដានចុងក្រោយ</div>
+            <div id="dashNotes"></div>
+          </div>
+          <div class="card">
+            <div class="card-h"><span class="icon" data-icon="settings" style="color:var(--primary)"></span><div><h2>ការកំណត់ថ្នាក់</h2></div></div>
+            <div class="sub">បង្ហាញលើផ្ទាំងគ្រប់គ្រង</div>
+            <div class="field"><label>ឈ្មោះសាលា</label><input class="input" id="setSchool" placeholder="ឧ. វិទ្យាល័យ ហ៊ុន សែន"></div>
+            <div class="field"><label>ថ្នាក់ / ក្រុម</label><input class="input" id="setClass" placeholder="ឧ. ថ្នាក់ទី ៨ ក"></div>
+            <div class="field" style="margin-bottom:10px">
+              <label>កាលវិភាគប្រចាំសប្តាហ៍</label>
+              <label class="checkbox-row"><input type="checkbox" id="setSat"> មានថ្នាក់ថ្ងៃសៅរ៍ (7:00–11:00)</label>
+              <label class="checkbox-row"><input type="checkbox" id="setPM"> មានវេនរសៀល (14:00–17:00) ចន្ទ–សុក្រ</label>
+            </div>
+            <button class="btn primary" id="saveSettingsBtn"><span class="icon" data-icon="save"></span>រក្សាទុកការកំណត់</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- STUDENTS -->
+      <section class="tab" id="tab-students">
+        <div class="card">
+          <div class="toolbar">
+            <div class="search-wrap">
+              <span class="icon" data-icon="search"></span>
+              <input class="input" id="studentSearch" placeholder="ស្វែងរកឈ្មោះ លេខសម្គាល់ ឬអាណាព្យាបាល…">
+            </div>
+            <span class="spacer"></span>
+            <button class="btn" id="importCsvBtn"><span class="icon" data-icon="upload"></span>នាំចូល CSV</button>
+            <button class="btn" id="exportCsvBtn"><span class="icon" data-icon="download"></span>នាំចេញ CSV</button>
+            <button class="btn primary" id="addStudentBtn"><span class="icon" data-icon="plus"></span>បន្ថែមសិស្ស</button>
+          </div>
+          <div class="table-wrap">
+            <table data-stack>
+              <thead><tr>
+                <th>លេខរៀង</th><th>លេខសម្គាល់</th><th>ឈ្មោះ</th><th>ភេទ</th>
+                <th>អាណាព្យាបាល</th><th>ទូរស័ព្ទ</th><th>អវត្តមាន (ម៉ោង)</th><th>មធ្យមភាគ</th><th></th>
+              </tr></thead>
+              <tbody id="studentsBody"></tbody>
+            </table>
+          </div>
+          <div id="studentsEmpty" class="empty" hidden>
+            <span class="icon" data-icon="users"></span>
+            <div>មិនទាន់មានសិស្សនៅឡើយទេ។ ចុច <b>បន្ថែមសិស្ស</b> ឬនាំចូលឯកសារ CSV។</div>
+          </div>
+          <input type="file" id="csvFile" accept=".csv,text/csv" hidden>
+        </div>
+      </section>
+
+      <!-- ATTENDANCE -->
+      <section class="tab" id="tab-attendance">
+        <div class="card">
+          <div class="toolbar">
+            <label style="font-size:13px;font-weight:600;color:var(--muted)">កាលបរិច្ឆេទ</label>
+            <input type="date" class="input" id="attDate" style="max-width:190px">
+            <span class="spacer"></span>
+            <button class="btn danger" id="attClear"><span class="icon" data-icon="trash"></span>សម្អាតថ្ងៃនេះ</button>
+          </div>
+          <div class="day-info" id="dayInfo"></div>
+          <div class="period-legend">
+            <span class="lg"><span class="sw P"></span>មានវត្តមាន</span>
+            <span class="lg"><span class="sw A"></span>អវត្តមាន</span>
+            <span class="lg"><span class="sw L"></span>យឺត</span>
+            <span class="lg"><span class="sw E"></span>សុំច្បាប់</span>
+          </div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>សិស្ស</th><th>លេខសម្គាល់</th><th>ម៉ោងប្រចាំថ្ងៃ</th><th>សរុប</th><th>សកម្មភាពរហ័ស</th></tr></thead>
+              <tbody id="attBody"></tbody>
+            </table>
+          </div>
+          <div id="attEmpty" class="empty" hidden><span class="icon" data-icon="calendar"></span><div>សូមបន្ថែមសិស្សជាមុនសិន។</div></div>
+          <div class="divider"></div>
+          <div class="hint" id="attSummary"></div>
+        </div>
+        <div class="card" style="border-color:#bfdbfe;background:linear-gradient(180deg,#f8fbff,#fff)">
+          <div class="card-h"><span class="icon" data-icon="download" style="color:var(--primary)"></span><div><h2>នាំចេញវត្តមានទៅ Excel</h2></div></div>
+          <div class="toolbar" style="margin-bottom:0">
+            <button class="btn" id="xlsToday"><span class="icon" data-icon="calendar"></span>ថ្ងៃនេះ</button>
+            <button class="btn" id="xlsMonth"><span class="icon" data-icon="file"></span>ខែនេះ (សង្ខេបម៉ោង)</button>
+            <button class="btn" id="xlsAll"><span class="icon" data-icon="database"></span>ទាំងអស់</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- GRADES -->
+      <section class="tab" id="tab-grades">
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="file" style="color:var(--primary)"></span><div><h2>មុខវិជ្ជា</h2></div></div>
+          <div id="subjectChips" style="margin-bottom:8px"></div>
+          <div class="toolbar" style="margin-top:6px;margin-bottom:0">
+            <input class="input" id="newSubject" placeholder="បន្ថែមមុខវិជ្ជាថ្មី…" style="max-width:240px">
+            <button class="btn" id="addSubjectBtn"><span class="icon" data-icon="plus"></span>បន្ថែម</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="chart" style="color:var(--primary)"></span><div><h2>របៀបគណនា</h2></div></div>
+          <div class="toolbar" style="margin-bottom:8px">
+            <span class="hint">មធ្យមភាគ = ពិន្ទុសរុប ÷</span>
+            <input type="number" class="input" id="gDivisor" min="0.1" step="0.1" style="max-width:110px">
+            <span class="hint">មធ្យមភាគអតិបរមា</span>
+            <input type="number" class="input" id="gMaxAvg" min="1" step="1" style="max-width:110px">
+          </div>
+          <div class="hint" id="gradeLegend"></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="award" style="color:var(--primary)"></span><div><h2>ការប្រឡង</h2></div></div>
+          <div class="toolbar">
+            <select class="input" id="tType" style="max-width:220px">
+              <option value="pretest">តេស្តមុន (Pre-test)</option>
+              <option value="monthly">ប្រឡងប្រចាំខែ (Monthly)</option>
+              <option value="semester">ប្រឡងឆមាស (Semester)</option>
+              <option value="other">ផ្សេងៗ (Other)</option>
+            </select>
+            <select class="input" id="tMonth" style="max-width:150px"><option value="0">មករា</option><option value="1">កុម្ភៈ</option><option value="2">មីនា</option><option value="3">មេសា</option><option value="4">ឧសភា</option><option value="5">មិថុនា</option><option value="6">កក្កដា</option><option value="7">សីហា</option><option value="8">កញ្ញា</option><option value="9">តុលា</option><option value="10">វិច្ឆិកា</option><option value="11">ធ្នូ</option></select>
+            <select class="input" id="tSemester" style="max-width:150px"><option value="1">ឆមាសទី១</option><option value="2">ឆមាសទី២</option></select>
+            <input class="input" id="tCustom" placeholder="ឈ្មោះការប្រឡង (ឧ. ពាក់កណ្ដាលឆមាស)" style="max-width:260px">
+            <input type="date" class="input" id="tDate" style="max-width:165px">
+            <button class="btn primary" id="addTestBtn"><span class="icon" data-icon="plus"></span>បន្ថែម</button>
+          </div>
+          <div class="table-wrap">
+            <table data-stack><thead><tr><th>ការប្រឡង</th><th>កាលបរិច្ឆេទ</th><th>បានបញ្ចូល</th><th></th></tr></thead><tbody id="testBody"></tbody></table>
+          </div>
+          <div id="testEmpty" class="empty" hidden><span class="icon" data-icon="award"></span><div>មិនទាន់មានការប្រឡងនៅឡើយទេ។</div></div>
+        </div>
+        <div class="card" id="scoreCard">
+          <div class="card-h"><span class="icon" data-icon="edit" style="color:var(--primary)"></span><div><h2>បញ្ចូលពិន្ទុ</h2></div></div>
+          <div class="toolbar">
+            <select class="input" id="testSelect" style="max-width:400px"></select>
+            <button class="btn" id="importScoresBtn"><span class="icon" data-icon="upload"></span>នាំចូលពិន្ទុពី Excel</button>
+            <button class="btn" id="scoreTemplateBtn"><span class="icon" data-icon="download"></span>ទាញយកគំរូ Excel</button>
+            <input type="file" id="scoreFile" accept=".xlsx,.xls,.csv" hidden>
+          </div>
+          <div class="hint" style="margin-bottom:12px">ជួរឈរចាំបាច់៖ «លេខសម្គាល់» ឬ «ឈ្មោះ» រួមជាមួយឈ្មោះមុខវិជ្ជាដូចក្នុងប្រព័ន្ធ។ ទាញយកគំរូ Excel ដើម្បីងាយស្រួល។</div>
+          <div class="table-wrap">
+            <table data-stack id="scoreTable"><thead id="scoreHead"></thead><tbody id="scoreBody"></tbody></table>
+          </div>
+          <div id="scoreEmpty" class="empty" hidden><span class="icon" data-icon="award"></span><div></div></div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="chart" style="color:var(--primary)"></span><div><h2 id="rankTitle">ចំណាត់ថ្នាក់</h2></div></div>
+          <div class="toolbar">
+            <button class="btn primary" id="exportRankBtn"><span class="icon" data-icon="download"></span>នាំចេញចំណាត់ថ្នាក់ (Excel)</button>
+            <button class="btn" id="exportRankHtmlBtn"><span class="icon" data-icon="print"></span>បង្ហាញ / បោះពុម្ពតារាង</button>
+            <button class="btn" id="honorBtn"><span class="icon" data-icon="award"></span>នាំចេញតារាងកិត្តិយស (Top 5)</button>
+          </div>
+          <div class="hint" id="rankSummary" style="margin-bottom:10px"></div>
+          <div class="table-wrap">
+            <table data-stack><thead><tr><th>ចំណាត់ថ្នាក់</th><th>សិស្ស</th><th>ពិន្ទុសរុប</th><th>មធ្យមភាគ</th><th>និទ្ទេស</th></tr></thead><tbody id="rankBody"></tbody></table>
+          </div>
+          <div id="rankEmpty" class="empty" hidden><span class="icon" data-icon="chart"></span><div>មិនទាន់មានពិន្ទុត្រូវបានកត់ត្រានៅឡើយទេ។</div></div>
+        </div>
+      </section>
+
+      <!-- NOTES -->
+      <section class="tab" id="tab-notes">
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="plus" style="color:var(--primary)"></span><div><h2>បន្ថែមកំណត់ចំណាំ</h2></div></div>
+          <div class="row">
+            <div class="field"><label>សិស្ស</label><select class="input" id="noteStudent"></select></div>
+            <div class="field"><label>កាលបរិច្ឆេទ</label><input type="date" class="input" id="noteDate"></div>
+          </div>
+          <div class="field"><label>កំណត់ចំណាំ</label><textarea class="input" id="noteText" rows="3" placeholder="តើមានអ្វីកើតឡើង?"></textarea></div>
+          <button class="btn primary" id="addNoteBtn"><span class="icon" data-icon="save"></span>រក្សាទុក</button>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="note" style="color:var(--primary)"></span><div><h2>កំណត់ត្រាចំណាំ</h2></div></div>
+          <div class="toolbar" style="margin-bottom:10px"><select class="input" id="noteFilter" style="max-width:240px"></select></div>
+          <div id="notesList"></div>
+        </div>
+      </section>
+
+      <!-- LETTERS -->
+      <section class="tab" id="tab-letters">
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="mail" style="color:var(--primary)"></span><div><h2>ការកំណត់លិខិតអញ្ជើញ</h2></div></div>
+          <div class="row">
+            <div class="field"><label>ចំនួនម៉ោងអវត្តមានអប្បបរមា</label><input type="number" class="input" id="letterThreshold" min="1" value="14"></div>
+            <div class="field"><label>ប្រភេទដែលរាប់បញ្ចូល</label>
+              <select class="input" id="letterScope">
+                <option value="A">អវត្តមាន (A) ប៉ុណ្ណោះ</option>
+                <option value="AL">អវត្តមាន (A) + យឺត (L)</option>
+              </select>
+            </div>
+          </div>
+          <div class="row">
+            <div class="field"><label>កាលបរិច្ឆេទជួប</label><input type="date" class="input" id="letterMeetDate"></div>
+            <div class="field"><label>ម៉ោងជួប</label><input type="time" class="input" id="letterMeetTime" value="09:00"></div>
+          </div>
+          <div class="field" style="margin-bottom:14px"><label>ទីតាំងជួប (វាយបញ្ចូល ឬជ្រើសរើសខាងក្រោម)</label>
+            <input class="input" id="letterMeetPlace">
+            <div id="placeChips" style="display:flex;flex-wrap:wrap;gap:6px;margin-top:8px"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>ឈ្មោះនាយក</label><input class="input" id="letterPrincipal"></div>
+            <div class="field"><label>ឈ្មោះសាលា (ក្នុងលិខិត)</label><input class="input" id="letterSchool"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>មន្ទីរអប់រំ (ក្បាលលិខិត)</label><input class="input" id="letterOffice"></div>
+            <div class="field"><label>ធ្វើនៅ (ទីកន្លែងចុះហត្ថលេខា)</label><input class="input" id="letterSignPlace"></div>
+          </div>
+          <div class="row">
+            <div class="field"><label>កាលបរិច្ឆេទលិខិត (ទទេ = ថ្ងៃនេះ)</label><input type="date" class="input" id="letterIssueDate"></div>
+            <div class="field"></div>
+          </div>
+          <button class="btn primary" id="letterSaveBtn"><span class="icon" data-icon="save"></span>រក្សាទុកការកំណត់</button>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="alert" style="color:var(--danger)"></span><div><h2>សិស្សដែលត្រូវអញ្ជើញ</h2></div></div>
+          <div class="table-wrap">
+            <table data-stack><thead><tr><th>សិស្ស</th><th>លេខសម្គាល់</th><th>អាណាព្យាបាល</th><th>អវត្តមាន</th><th>ចំនួនថ្ងៃ</th><th>សកម្មភាព</th></tr></thead><tbody id="letterCandidates"></tbody></table>
+          </div>
+          <div id="letterEmpty" class="empty" hidden><span class="icon" data-icon="check"></span><div>គ្មានសិស្សណាម្នាក់អវត្តមានលើសកម្រិតដែលបានកំណត់ទេ។</div></div>
+        </div>
+      </section>
+
+      <!-- BACKUP -->
+      <section class="tab" id="tab-backup">
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="database" style="color:var(--primary)"></span><div><h2>ទិន្នន័យ Cloud</h2></div></div>
+          <div class="hint">ទិន្នន័យរបស់អ្នកត្រូវបានរក្សាទុកដោយស្វ័យប្រវត្តិទៅកាន់ Supabase Cloud។ អ្នកអាចនាំចេញវាជាឯកសារ JSON ដើម្បីរក្សាទុកបន្ថែម។</div>
+          <div class="hint" id="backupStatusText" style="margin-top:12px"></div>
+          <div class="toolbar" style="margin-top:14px">
+            <button class="btn primary" id="exportJsonBtn"><span class="icon" data-icon="download"></span>ទាញយកឯកសារបម្រុងទុក (.json)</button>
+            <button class="btn" id="importJsonBtn"><span class="icon" data-icon="upload"></span>ស្តារពីឯកសារ (.json)</button>
+            <input type="file" id="jsonFile" accept=".json" hidden>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-h"><span class="icon" data-icon="alert" style="color:var(--danger)"></span><div><h2 style="color:var(--danger)">តំបន់គ្រោះថ្នាក់</h2></div></div>
+          <button class="btn danger" id="wipeBtn"><span class="icon" data-icon="trash"></span>លុបទិន្នន័យទាំងអស់ (Cloud)</button>
+        </div>
+      </section>
+
+    </div>
+  </main>
+</div>
+
+<!-- MODALS -->
+<div class="overlay" id="overlay">
+  <div class="modal">
+    <div class="modal-head"><h3 id="modalTitle">បន្ថែមសិស្ស</h3><button class="btn icon-only sm" id="modalClose"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body">
+      <div class="row">
+        <div class="field"><label>លេខសម្គាល់</label><input class="input" id="fNo" placeholder="ឧ. 2024-001"></div>
+        <div class="field"><label>ឈ្មោះពេញ *</label><input class="input" id="fName" placeholder="ឈ្មោះសិស្ស"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>ភេទ</label><select class="input" id="fGender"><option value="">—</option><option value="ស្រី">ស្រី</option><option value="ប្រុស">ប្រុស</option><option value="ផ្សេងៗ">ផ្សេងៗ</option></select></div>
+        <div class="field"><label>ថ្ងៃខែឆ្នាំកំណើត</label><input type="date" class="input" id="fDob"></div>
+      </div>
+      <div class="row">
+        <div class="field"><label>អាណាព្យាបាល</label><input class="input" id="fGuardian"></div>
+        <div class="field"><label>ទូរស័ព្ទ</label><input class="input" id="fPhone"></div>
+      </div>
+      <div class="field"><label>អាសយដ្ឋាន</label><input class="input" id="fAddress"></div>
+      <div class="field"><label>កំណត់ចំណាំ</label><textarea class="input" id="fNotes" rows="2"></textarea></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn" id="modalCancel">បោះបង់</button>
+      <button class="btn primary" id="modalSave"><span class="icon" data-icon="save"></span>រក្សាទុក</button>
+    </div>
+  </div>
+</div>
+
+<div class="overlay" id="letterOverlay">
+  <div class="modal wide">
+    <div class="modal-head"><h3>លិខិតអញ្ជើញមាតាបិតា</h3><button class="btn icon-only sm" id="letterClose"><span class="icon" data-icon="x"></span></button></div>
+    <div class="modal-body" id="letterBody"></div>
+    <div class="modal-foot">
+      <button class="btn" id="letterCancel">បិទ</button>
+      <button class="btn primary" id="letterPrintBtn"><span class="icon" data-icon="print"></span>បោះពុម្ព / រក្សាទុក PDF</button>
+    </div>
+  </div>
+</div>
+
+<div id="honorOverlay" class="honor-overlay">
+  <div class="honor-toolbar">
+    <div class="honor-head"><b>តារាងកិត្តិយស</b><span class="hint" id="honorSub"></span></div>
+    <div class="honor-fields">
+      <label><span>ឈ្មោះសាលា</span><input class="input" id="hrSchool"></label>
+      <label><span>ឆ្នាំសិក្សា</span><input class="input" id="hrYear"></label>
+      <label><span>គ្រូបន្ទុកថ្នាក់</span><input class="input" id="hrTeacher"></label>
+      <label><span>ទីកន្លែង</span><input class="input" id="hrPlace"></label>
+      <label><span>កាលបរិច្ឆេទ</span><input type="date" class="input" id="hrDate"></label>
+    </div>
+    <div class="honor-actions">
+      <button class="btn primary" id="honorPrintBtn"><span class="icon" data-icon="download"></span>បោះពុម្ព / រក្សាទុក PDF</button>
+      <button class="btn" id="honorCloseBtn"><span class="icon" data-icon="x"></span>បិទ</button>
+    </div>
+    <div class="hint">នៅពេលបោះពុម្ព៖ ជ្រើស A4 · Margins: None · បើក Background graphics។ អាចចុចលើអក្សរក្នុងតារាងដើម្បីកែដោយផ្ទាល់។</div>
+  </div>
+  <div class="honor-note" id="honorNote" hidden></div>
+  <div class="honor-stage" id="honorStage"><div class="honor-scale" id="honorScale"><div class="hr-page" id="honorPage"></div></div></div>
+</div>
+
+<div id="toast"></div>
+
+<script src="app.js"></script>
+</body>
+</html>

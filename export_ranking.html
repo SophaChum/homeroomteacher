@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="km">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>តារាងពិន្ទុមធ្យមភាគ តេស្តដើមឆ្នាំ ថ្នាក់ទី ១F</title>
+    <!-- Import Google Fonts for Khmer Muol and Siemreap -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Moul&family=Siemreap&display=swap" rel="stylesheet">
+    
+    <style>
+        /* Page Setup for A4 */
+        @page {
+            size: A4 portrait;
+            margin: 15mm;
+        }
+
+        body {
+            font-family: 'Siemreap', sans-serif;
+            font-size: 13px;
+            line-height: 1.4;
+            color: #000;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* A4 Paper Container */
+        .page-container {
+            width: 210mm;
+            min-height: 297mm;
+            background: #fff;
+            padding: 15mm 18mm;
+            box-sizing: border-box;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        .muol {
+            font-family: 'Moul', serif;
+            font-weight: normal;
+        }
+
+        /* Top Motto Header */
+        .top-header {
+            display: flex;
+            justify-content: flex-end;
+            margin-bottom: 5px;
+        }
+
+        .motto {
+            text-align: center;
+            width: 45%;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .motto .sub {
+            font-size: 13px;
+        }
+
+        /* School Name */
+        .school-name {
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
+
+        /* Document Title */
+        .doc-title {
+            text-align: center;
+            font-size: 14px;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        /* Table Styling */
+        table {
+            width: 88%;
+            margin: 0 auto;
+            border-collapse: collapse;
+            font-size: 12.5px;
+        }
+
+        th, td {
+            border: 1px solid #000;
+            padding: 3px 6px;
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        th {
+            font-weight: bold;
+            padding: 5px 6px;
+        }
+
+        td.name-col {
+            text-align: left;
+            padding-left: 12px;
+        }
+
+        .rank {
+            color: #d93025; /* Red text for rank column */
+        }
+
+        /* Summary Note */
+        .summary-note {
+            width: 88%;
+            margin: 8px auto 15px auto;
+            font-size: 12px;
+        }
+
+        /* Footer Signatures */
+        .footer-section {
+            width: 92%;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+        }
+
+        .director-sign {
+            width: 42%;
+            text-align: center;
+            margin-top: 65px;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .teacher-sign {
+            width: 54%;
+            text-align: center;
+            font-size: 12.5px;
+            line-height: 1.6;
+        }
+
+        .teacher-role {
+            margin-top: 4px;
+            font-size: 13px;
+        }
+
+        .teacher-name {
+            margin-top: 40px;
+            padding-left: 90px;
+            font-size: 13px;
+        }
+
+        /* Print optimization */
+        @media print {
+            body {
+                background: none;
+                padding: 0;
+            }
+            .page-container {
+                box-shadow: none;
+                width: 100%;
+                min-height: auto;
+                padding: 0;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="page-container">
+    <!-- Kingdom of Cambodia Motto -->
+    <div class="top-header">
+        <div class="motto muol">
+            ព្រះរាជាណាចក្រកម្ពុជា<br>
+            <span class="sub">ជាតិ សាសនា ព្រះមហាក្សត្រ</span>
+        </div>
+    </div>
+
+    <!-- School Name -->
+    <div class="school-name muol" id="rankingSchool">
+        វិទ្យាល័យសម្តេចក្រុមព្រះ....អង្គរនាប
+    </div>
+
+    <!-- Title -->
+    <div class="doc-title muol" id="rankingTitle">
+        តារាងពិន្ទុមធ្យមភាគ តេស្តដើមឆ្នាំ ថ្នាក់ទី ១F<br>
+        ឆ្នាំសិក្សា ២០២៦-២០២៧
+    </div>
+
+    <!-- Grades Table -->
+    <table>
+        <thead>
+            <tr>
+                <th style="width: 7%;">ល.រ</th>
+                <th style="width: 13%;">អត្តលេខ</th>
+                <th style="width: 32%;">គោត្តនាម និងនាម</th>
+                <th style="width: 8%;">ភេទ</th>
+                <th style="width: 15%;">មធ្យមភាគ</th>
+                <th style="width: 12%;">និទ្ទេស</th>
+                <th style="width: 13%;">ចំ.ថ្នាក់</th>
+            </tr>
+        </thead>
+        <tbody id="rankingBody">
+            <tr><td>1</td><td></td><td class="name-col">សំអឿន សុមនា</td><td>ស</td><td>4.44</td><td>F</td><td class="rank">3</td></tr>
+            <tr><td>2</td><td></td><td class="name-col">ឡាយ សីហា</td><td>ប</td><td>4.17</td><td>F</td><td class="rank">4</td></tr>
+            <tr><td>3</td><td></td><td class="name-col">សែ វីរៈបុត្រ</td><td>ប</td><td>3.82</td><td>F</td><td class="rank">6</td></tr>
+            <tr><td>4</td><td></td><td class="name-col">ហុន ខុងខាយ</td><td>ប</td><td>3.82</td><td>F</td><td class="rank">6</td></tr>
+            <tr><td>5</td><td></td><td class="name-col">សឿន លីណា</td><td>ស</td><td>3.75</td><td>F</td><td class="rank">8</td></tr>
+            <tr><td>6</td><td></td><td class="name-col">ហៀង និតា</td><td>ស</td><td>3.75</td><td>F</td><td class="rank">8</td></tr>
+            <tr><td>7</td><td></td><td class="name-col">សែន សុខហូរ</td><td>ប</td><td>3.68</td><td>F</td><td class="rank">10</td></tr>
+            <tr><td>8</td><td></td><td class="name-col">ឡុត ច័ន្ទបូរមី</td><td>ស</td><td>3.47</td><td>F</td><td class="rank">11</td></tr>
+            <tr><td>9</td><td></td><td class="name-col">សឿន លុំវិទូ</td><td>ប</td><td>3.06</td><td>F</td><td class="rank">12</td></tr>
+            <tr><td>10</td><td></td><td class="name-col">ហិត គីមហុង</td><td>ស</td><td>2.57</td><td>F</td><td class="rank">14</td></tr>
+            <tr><td>11</td><td></td><td class="name-col">ហឿន រតនា</td><td>ស</td><td>2.43</td><td>F</td><td class="rank">16</td></tr>
+            <tr><td>12</td><td></td><td class="name-col">ហិត លីហុង</td><td>ស</td><td>2.36</td><td>F</td><td class="rank">17</td></tr>
+            <tr><td>13</td><td></td><td class="name-col">ហៃ សាវី</td><td>ស</td><td>2.22</td><td>F</td><td class="rank">19</td></tr>
+            <tr><td>14</td><td></td><td class="name-col">ហឿន ដាលីស</td><td>ស</td><td>2.08</td><td>F</td><td class="rank">22</td></tr>
+            <tr><td>15</td><td></td><td class="name-col">ហឿន ដាវីយ៉ា</td><td>ស</td><td>1.81</td><td>F</td><td class="rank">25</td></tr>
+            <tr><td>16</td><td></td><td class="name-col">ហ៊ិន តុលា</td><td>ស</td><td>1.67</td><td>F</td><td class="rank">26</td></tr>
+            <tr><td>17</td><td></td><td class="name-col">សោម ស្រីណៃ</td><td>ស</td><td>1.60</td><td>F</td><td class="rank">27</td></tr>
+            <tr><td>18</td><td></td><td class="name-col">ហ៊ាង សុខវិសាល</td><td>ប</td><td>1.25</td><td>F</td><td class="rank">29</td></tr>
+            <tr><td>19</td><td></td><td class="name-col">សំ តុលា</td><td>ប</td><td>0.97</td><td>F</td><td class="rank">31</td></tr>
+            <tr><td>20</td><td></td><td class="name-col">ហេង រតនៈ</td><td>ប</td><td>0.83</td><td>F</td><td class="rank">33</td></tr>
+            <tr><td>21</td><td></td><td class="name-col">ហ៊ុន ប្រសើរ</td><td>ប</td><td>0.76</td><td>F</td><td class="rank">34</td></tr>
+            <tr><td>22</td><td></td><td class="name-col">ហៃ សុវណ្ណារ៉ា</td><td>ប</td><td>0.76</td><td>F</td><td class="rank">34</td></tr>
+            <tr><td>23</td><td></td><td class="name-col">សឿន បុរី</td><td>ប</td><td>0.00</td><td>F</td><td class="rank">36</td></tr>
+            <tr><td>24</td><td></td><td class="name-col">សៀង រ៉ាយុត</td><td>ប</td><td>0.00</td><td>F</td><td class="rank">36</td></tr>
+            <tr><td>25</td><td></td><td class="name-col">ហ៊ាន ស្រីលីនដា</td><td>ស</td><td>0.00</td><td>F</td><td class="rank">36</td></tr>
+            <tr><td>26</td><td></td><td class="name-col">ហឿន កល្យាណ</td><td>ស</td><td>0.00</td><td>F</td><td class="rank">36</td></tr>
+            <tr><td>27</td><td></td><td class="name-col">អន ស្រីកែវ</td><td>ស</td><td>0.00</td><td>F</td><td class="rank">36</td></tr>
+        </tbody>
+    </table>
+
+    <!-- Summary Note -->
+    <div class="summary-note" id="rankingSummary">
+        * បញ្ឈប់បញ្ជីត្រឹមចំនួន៖ 41 នាក់, ស្រី 20 នាក់។
+    </div>
+
+    <!-- Date & Signatures -->
+    <div class="footer-section">
+        <div class="director-sign muol">
+            បានឃើញ និងឯកភាព<br>
+            នាយកសាលា
+        </div>
+        <div class="teacher-sign">
+            ថ្ងៃ..........................ខែ..................ព.ស. ២៥៦..<br>
+            វិ.អង្គរនាប, ថ្ងៃទី........... ខែ............ឆ្នាំ ២០២.....<br>
+            <div class="teacher-role muol">គ្រូបន្ទុកថ្នាក់</div>
+            <div class="teacher-name muol" id="rankingTeacher">ជុំ សុថា</div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
